@@ -1,4 +1,5 @@
 #!/bin/bash
+#Dieses Script wird gebraucht um eine Email über den Google smtp Server zu senden
 
 FROM=modul122.info@gmail.com
 TO=modul122.info@gmail.com
