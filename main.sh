@@ -1,12 +1,12 @@
 #!/bin/bash
 
-####VARIABELN####
+###VARIABELN###
 
 VAR_INSTALL=""
 VAR_UINPUT=0
 VAR_THRESHOLD=0
 
-####SCRIPT####
+###SCRIPT###
 
 #Überprüfe ob sendEmail installiert ist
 command -v sendEmail >/dev/null 2>&1 ||
