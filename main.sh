@@ -6,6 +6,15 @@ VAR_INSTALL=""
 VAR_UINPUT=0
 VAR_THRESHOLD=0
 
+###FUNCTIONS###
+
+function is_running {
+	IS_RUNNING=$(ps -efww | grep -w "$1" | grep -v grep | grep -v $$ | awk '{ print $2 }')
+	if [ ! -z "$IS_RUNNING" ]; then
+		kill $IS_RUNNING
+	fi
+}
+
 ###SCRIPT###
 
 #Überprüfe ob sendEmail installiert ist
@@ -36,6 +45,10 @@ command -v sendEmail >/dev/null 2>&1 ||
 
 #Überprüfung ob sendEmail richtig installiert wurde
 if hash sendEmail 2>/dev/null; then
+
+	is_running rms.sh
+	is_running test.sh
+
 	clear
 	clear
 
@@ -57,14 +70,14 @@ if hash sendEmail 2>/dev/null; then
 	echo "	 	|_____/ \___|_|  |_| .__/ \__|                    	"
 	echo "				   | |                           	"
 	echo "				   |_|  				"
-	echo ""
+	echo
 
 	echo "		1) Start		"
 	echo "		2) Test this script	"
 	#Benutzereingabe mit Fehlerüberprüfung
 	while true
 	do
-		echo ""
+		echo
 		read -p "	$(hostname) >" VAR_UINPUT
 
 		case "$VAR_UINPUT" in
@@ -93,10 +106,12 @@ if hash sendEmail 2>/dev/null; then
 		#Zu Testzwecken gedacht, hierbei wird noch ein Test Auslastungs Script mitgestartet
 		2)
 			echo "	Setting threshold to 30 ..."
+			sleep 1
 			VAR_THRESHOLD=30
 			if [ -f "test.sh" ]; then			#Wenn das Script test.sh existiert und im gleichen Verzeichnis ist
 				echo "	Starting test.sh ..."
 				./test.sh
+				sleep 2
 			else
 				#Falls das Script nicht im selben Verzeichnis liegt, error Ausgabe
 				echo "	File \"test.sh\" is missing"
@@ -110,7 +125,7 @@ if hash sendEmail 2>/dev/null; then
 				echo "	File \"rms.sh\" is missing"
 				exit 2
 			fi
-			
+
 			break;;
 		#Wenn Benutzereingabe nicht 1 oder 2 ist
 		*)
