@@ -8,8 +8,34 @@ VAR_THRESHOLD=0
 
 ###FUNCTIONS###
 
+#Benutzereingabe mit Fehlerüberprüfung, übergebener Parameter ist das Programm das installiert werden soll
+function func_install {
+        echo "$1 that is needed for the program to run, is not installed on your device!"
+        echo "Should it be installed? (y/n)"
+        #Benutzereingabe mit Fehlerüberprüfung
+        read VAR_INSTALL
+        while true
+        do
+                shopt -s nocasematch    #Ab hier wird nicht mehr auf die Gross- und Kelinschreibung geachtet
+                case "$VAR_INSTALL" in
+                "y"|"yes" | "j" | "ja")                         #Eingabemöglichkeiten
+                        echo "installing..."
+                        apt-get install $1 >/dev/null    #installation von sendeEmail
+                        break;;
+                "n"|"no" | "n" | "nein")
+                        echo "canceling"
+                        exit 0;;
+                *)      #Falls in VAR_INSTALL weder "ja" noch "nein" steht, Neueingabe
+                        echo "Invalid input, please retype (y/n)"
+                        read VAR_INSTALL;;
+                esac
+                shopt -u nocasematch    #Ab hier wird wieder auf die Gross- und Kelinschreibung geachtet
+        done
+
+}
+
 #Wenn der als Parameter übergebene Prozess bereits läuft wird er beendet
-function is_running {
+function func_running {
 	IS_RUNNING=$(ps -efww | grep -w "$1" | grep -v grep | grep -v $$ | awk '{ print $2 }')	#Grep  Prozess
 	if [ ! -z "$IS_RUNNING" ]; then
 		kill $IS_RUNNING
@@ -18,42 +44,33 @@ function is_running {
 
 ###SCRIPT###
 
+#Überprüfe ob wget installiert ist
+command -v wget >/dev/null
+if [ $? -eq 0 ]; then
+	wget -q --spider http://google.com	#checkt die verfügbarkeit von google.com
+
+	if ! [ $? -eq 0 ]; then			#Wenn der Exit code vom get Befehl nicht 0 ist
+		echo "This script requires a stable internet connection to run!"
+		exit 4
+	fi
+else
+	func_install wget
+fi
+
+
 #Überprüfe ob sendEmail installiert ist
 command -v sendEmail >/dev/null 2>&1 ||
 {
-	echo >&2 "sendEmail that is needed for the program to run, is not installed on your device!";
-	echo "Should it be installed? (y/n)";
-	#Benutzereingabe mit Fehlerüberprüfung
-	read VAR_INSTALL;
-	while true
-	do
-		shopt -s nocasematch	#Ab hier wird nicht mehr auf die Gross- und Kelinschreibung geachtet
-		case "$VAR_INSTALL" in
-		"y"|"yes" | "j" | "ja")				#Eingabemöglichkeiten
-			echo "installing..."
-			apt-get install sendemail >/dev/null	#installation von sendeEmail
-			break;;
-		"n"|"no" | "n" | "nein")
-			echo "canceling"
-			exit 0;;
-		*)	#Falls in VAR_INSTALL weder "ja" noch "nein" steht, Neueingabe
-			echo "Invalid input, please retype (y/n)"
-			read VAR_INSTALL;;
-		esac
-		shopt -u nocasematch	#Ab hier wird wieder auf die Gross- und Kelinschreibung geachtet
-	done;
+	func_install sendemail
 }
 
-command -v curl www.google.com >/dev/null 2>&1 ||
-{
-	echo "No internet"
-}
+
 
 #Überprüfung ob sendEmail richtig installiert wurde
 if hash sendEmail 2>/dev/null; then
 
-	is_running rms.sh
-	is_running test.sh
+	func_running rms.sh
+	func_running test.sh
 
 	clear
 	clear
