@@ -5,7 +5,7 @@ THRESHOLD=$1
 SUBJECT="$(hostname): CPU Consumption Alert => Utilization Exceeded Threshold."
 EMAIL=./email.$$
 MAIL_PROG=./emailer.sh
-PS_HEADER=$(ps aux | head -n 1)
+PS_HEADER="$(ps aux | head -n 1)"
 GET_PID=1
 
 while :
