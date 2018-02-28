@@ -8,8 +8,9 @@ VAR_THRESHOLD=0
 
 ###FUNCTIONS###
 
+#Wenn der als Parameter übergebene Prozess bereits läuft wird er beendet
 function is_running {
-	IS_RUNNING=$(ps -efww | grep -w "$1" | grep -v grep | grep -v $$ | awk '{ print $2 }')
+	IS_RUNNING=$(ps -efww | grep -w "$1" | grep -v grep | grep -v $$ | awk '{ print $2 }')	#Grep  Prozess
 	if [ ! -z "$IS_RUNNING" ]; then
 		kill $IS_RUNNING
 	fi
@@ -24,7 +25,7 @@ command -v sendEmail >/dev/null 2>&1 ||
 	echo "Should it be installed? (y/n)";
 	#Benutzereingabe mit Fehlerüberprüfung
 	read VAR_INSTALL;
-	while true;
+	while true
 	do
 		shopt -s nocasematch	#Ab hier wird nicht mehr auf die Gross- und Kelinschreibung geachtet
 		case "$VAR_INSTALL" in
@@ -41,6 +42,11 @@ command -v sendEmail >/dev/null 2>&1 ||
 		esac
 		shopt -u nocasematch	#Ab hier wird wieder auf die Gross- und Kelinschreibung geachtet
 	done;
+}
+
+command -v curl www.google.com >/dev/null 2>&1 ||
+{
+	echo "No internet"
 }
 
 #Überprüfung ob sendEmail richtig installiert wurde
@@ -120,6 +126,7 @@ if hash sendEmail 2>/dev/null; then
 			if [ -f "rms.sh" ]; then			#Wenn das Script rms.sh existiert und im gleichen Verzeichnis ist
 				echo "	Starting rms.sh ..."
 				./rms.sh $VAR_THRESHOLD &		#Startet ds rms Script mit dem Threshold Parameter im Hintergrund
+				sleep 0.5
 			else
 				#Falls das Script nicht im selben Verzeichnis liegt, error Ausgabe
 				echo "	File \"rms.sh\" is missing"
