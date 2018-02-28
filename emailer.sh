@@ -10,3 +10,5 @@ SUBJECT=$1
 MESSAGE=$(cat $2)
 
 sendEmail -f $FROM -t $TO -u "$SUBJECT" -m "$MESSAGE" -s $SERVER -xu $USER -xp $PASS
+
+exit 0
