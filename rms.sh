@@ -6,32 +6,41 @@ SUBJECT="$(hostname): CPU Consumption Alert => Utilization Exceeded Threshold."
 EMAIL=./email.$$
 MAIL_PROG=./emailer.sh
 PS_HEADER="$(ps aux | head -n 1)"
-GET_PID=1
+declare -a PID_CHECK=()
 
 while :
 do
-	sleep 10
-	CPU_USED_PERCENTAGES=($(ps aux | fgrep -v USER | sort -nr -k3 | head -10 \
-					| tr -s " " | cut -d " " -f 3 | cut -d "." -f 1))
+        sleep 60
 
-	for CPU_USED_PERCENTAGE in ${CPU_USED_PERCENTAGES[@]}
+        STR_PID_PERCENTAGES=$(ps aux | fgrep -v USER | sort -nr -k3 | head -10 | cut -c12-20 | cut -d "." -f 1)
+
+	i=1
+	for token in $STR_PID_PERCENTAGES
 	do
-		if [[ $CPU_USED_PERCENTAGE -gt $THRESHOLD && $GET_PID != ${PID_CHECK[*]} ]]; then
-
-			GET_PID=$(ps aux | fgrep "${CPU_USED_PERCENTAGE}." | fgrep -v grep | tr -s " " | cut -d " " -f 2)
-
-			echo "$PS_HEADER" >> $EMAIL
-			echo '\n' >> $EMAIL
-			ps aux | fgrep "${CPU_USED_PERCENTAGE}." | fgrep -v grep >> $EMAIL
-			PID_CHECK+=("$GET_PID")
-			echo >> $EMAIL
+		if [ $(($i % 2)) -eq 0 ]; then
+			ARR_PERCENTAGES+=($token)
+		else
+			ARR_PID+=($token)
 		fi
+		((i++))
 	done
 
-	if [ -f $EMAIL ]; then
-		sed "1 i$DATE" $EMAIL > $EMAIL.tmp && mv $EMAIL.tmp $EMAIL
-		echo '\n' >> $EMAIL
-		$MAIL_PROG "$SUBJECT" "$EMAIL" >/dev/null
-		rm -f $EMAIL
-	fi
+	for (( i=0; i < ${#ARR_PID[@]}; ++i ))
+	do
+		if [[ ${ARR_PERCENTAGES[$i]} -gt $THRESHOLD && ${PID_CHECK[*]} != *${ARR_PID[$i]}* ]]; then
+
+			echo "$PS_HEADER" >> $EMAIL
+			echo >> $EMAIL
+
+			ps aux | fgrep ${ARR_PID[$i]} | fgrep -v grep >> $EMAIL
+			PID_CHECK+=(${ARR_PID[$i]})
+
+			echo >> $EMAIL
+			sed "1 i$DATE" $EMAIL > $EMAIL.tmp && mv $EMAIL.tmp $EMAIL
+			echo '\n' >> $EMAIL
+
+			$MAIL_PROG "$SUBJECT" "$EMAIL" >/dev/null
+			rm -f $EMAIL
+		fi
+	done
 done
