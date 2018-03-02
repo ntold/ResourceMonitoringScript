@@ -10,6 +10,7 @@ do
 	if [ "$VAR_CHECK_SENDER" == ">me</" ]; then
 		if [[ "$VAR_CHECK = *"kill"*" ]]; then
 			kill $VAR_PID
+			exit 0
 		fi
 	fi
 done
