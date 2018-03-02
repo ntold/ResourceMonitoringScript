@@ -71,6 +71,7 @@ if hash sendEmail 2>/dev/null; then
 
 	func_running rms.sh
 	func_running test.sh
+	func_running email_check
 
 	clear
 	clear
@@ -143,7 +144,6 @@ if hash sendEmail 2>/dev/null; then
 			if [ -f "rms.sh" ]; then			#Wenn das Script rms.sh existiert und im gleichen Verzeichnis ist
 				echo "	Starting rms.sh ..."
 				./rms.sh $VAR_THRESHOLD &		#Startet ds rms Script mit dem Threshold Parameter im Hintergrund
-				sleep 0.5
 			else
 				#Falls das Script nicht im selben Verzeichnis liegt, error Ausgabe
 				echo "	File \"rms.sh\" is missing"

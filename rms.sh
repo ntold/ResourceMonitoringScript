@@ -10,7 +10,7 @@ declare -a PID_CHECK=()
 
 while :
 do
-        sleep 60
+        sleep 1
 
         STR_PID_PERCENTAGES=$(ps aux | fgrep -v USER | sort -nr -k3 | head -10 | cut -c12-20 | cut -d "." -f 1)
 
@@ -41,6 +41,8 @@ do
 
 			$MAIL_PROG "$SUBJECT" "$EMAIL" >/dev/null
 			rm -f $EMAIL
+			echo "${ARR_PID[$i]}"
+			./email_check.sh "${ARR_PID[$i]}"
 		fi
 	done
 done
