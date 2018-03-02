@@ -36,7 +36,8 @@ function func_install {
 
 #Wenn der als Parameter übergebene Prozess bereits läuft wird er beendet
 function func_running {
-	IS_RUNNING=$(ps -efww | grep -w "$1" | grep -v grep | grep -v $$ | awk '{ print $2 }')	#Grep  Prozess
+	IS_RUNNING=$(ps -efww | grep -w "$1" | grep -v grep | grep -v $$ | awk '{ print $2 }')	#Grep Prozess ID
+
 	if [ ! -z "$IS_RUNNING" ]; then
 		kill $IS_RUNNING
 	fi

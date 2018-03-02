@@ -5,6 +5,7 @@ THRESHOLD=$1
 SUBJECT="$(hostname): CPU Consumption Alert => Utilization Exceeded Threshold."
 EMAIL=./email.$$
 MAIL_PROG=./emailer.sh
+EMAIL_LISTENER=./email_check.sh
 PS_HEADER="$(ps aux | head -n 1)"
 declare -a PID_CHECK=()
 
@@ -12,7 +13,7 @@ while :
 do
         sleep 1
 
-        STR_PID_PERCENTAGES=$(ps aux | fgrep -v USER | sort -nr -k3 | head -10 | cut -c12-20 | cut -d "." -f 1)
+        STR_PID_PERCENTAGES=$(ps aux | fgrep -v USER | sort -nr -k3 | head -10 | cut -c10-20 | cut -d "." -f 1)
 
 	i=1
 	for token in $STR_PID_PERCENTAGES
@@ -37,12 +38,13 @@ do
 
 			echo >> $EMAIL
 			sed "1 i$DATE" $EMAIL > $EMAIL.tmp && mv $EMAIL.tmp $EMAIL
-			echo '\n' >> $EMAIL
+			echo >> $EMAIL
 
 			$MAIL_PROG "$SUBJECT" "$EMAIL" >/dev/null
 			rm -f $EMAIL
-			echo "${ARR_PID[$i]}"
-			./email_check.sh "${ARR_PID[$i]}"
+
+			$EMAIL_LISTENER "${ARR_PID[$i]}" &
+
 		fi
 	done
 done
