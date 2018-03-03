@@ -1,7 +1,18 @@
 #!/bin/bash
 
+###################################################################
+#Script Name	:       ResourceMonitoringScript                                    
+#File Name	:	email_check.sh
+#Description	:                                                                        
+#Date           :       05.03.2018                                                                                    
+#Author       	:	Danyyil Luntovsky
+#Version       	:	1.0                                           
+###################################################################
+
+###VARIABLES###
 VAR_PID="$1"
 
+###SCRIPT###
 while true
 do
 	sleep 10
