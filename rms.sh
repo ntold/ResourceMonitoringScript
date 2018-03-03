@@ -1,5 +1,15 @@
 #!/bin/bash
 
+###################################################################
+#Script Name	:       ResourceMonitoringScript                                    
+#File Name	:	rms.sh
+#Description	:                                                                        
+#Date           :       05.03.2018                                                                                    
+#Author       	:	Danyyil Luntovsky
+#Version       	:	1.0                                           
+###################################################################
+
+###VARIABLES###
 DATE=$(date '+%d/%m/%Y %H:%M %Z')
 THRESHOLD=$1
 SUBJECT="$(hostname): CPU Consumption Alert => Utilization Exceeded Threshold."
@@ -9,6 +19,7 @@ EMAIL_LISTENER=./email_check.sh
 PS_HEADER="$(ps aux | head -n 1)"
 declare -a PID_CHECK=()
 
+###SCRIPT###
 while :
 do
         sleep 1
