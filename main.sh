@@ -1,5 +1,14 @@
 #!/bin/bash
 
+###################################################################
+#Script Name	:       main.sh                                                                                       
+#Description	:                                                                        
+#Date           :       05.03.2018                                                                                    
+#Author       	:	Danyyil Luntovsky
+#Version       	:	1.0                                           
+###################################################################
+
+
 ###VARIABELN###
 
 VAR_INSTALL=""
