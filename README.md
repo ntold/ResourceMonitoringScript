@@ -14,11 +14,11 @@ Sollte ein bestimmter Prozess mehr Leistung verbrauchen, als mein Skript vorgibt
 
 	main.sh
 
-	exit 1	Programm ist nicht installiert
+		exit 1	Programm ist nicht installiert
 
-	exit 2	Eine Datei wurde gelöscht / verschoben
+		exit 2	Eine Datei wurde gelöscht / verschoben
 
-	exit 3	Keine / nicht stabile Internetverbindung
+		exit 3	Keine / nicht stabile Internetverbindung
 
 	rms.sh [Schwellenwert]
 
