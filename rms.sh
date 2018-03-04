@@ -20,7 +20,7 @@ STR_SUBJECT="$(hostname): CPU Consumption Alert => Utilization Exceeded Threshol
 EMAIL=./email.$$			#Name der Emaildatei, die erstellt wird, durch das '$$' (PID des Prozesses), wird der Name einzigartig
 MAIL_PROG=./emailer.sh			#Email Programm
 EMAIL_LISTENER=./email_check.sh		#Email listener Programm
-STR_HEADER="$(ps aux | head -n 1)"	#Die Kopfzeile der Email mit den Informationen wie Name, Befehl, PID usw.
+STR_HEADER="$(ps aux | head -1 | tr -s "	")"	#Die Kopfzeile der Email mit den Informationen wie Name, Befehl, PID usw.
 declare -a ARR_PERCENTAGES=()		#Deklaration von Array
 declare -a ARR_PID=()			#Deklaration von Array
 declare -a ARR_PID_CHECK=()		#Deklaration von Array
@@ -49,9 +49,6 @@ do
 		((i++))
 	done
 
-	#echo "${ARR_PID[*]}"
-	#echo "${ARR_PERCENTAGES[*]}"
-	#exit 0
 	#-------------------------------------------------------[ Check & Send ]-------------------------------------------------------#
 	#Dies ist das Herzstück des Scripts, und zwar geht es hier um die Überprüfung der ganzen Zahlen aus den beiden Arrays ARR_PERCENTAGES und ARR_PID
 	#Mit einer For-Schleife loope ich durch jede PID im Array ARR_PID
@@ -67,7 +64,7 @@ do
 			echo "$STR_HEADER" >> $EMAIL	#Erstelle eine Datei mit dem Header namens email.[PID]
 			echo >> $EMAIL
 
-			ps aux | fgrep -v grep | fgrep "${ARR_PID[$i]}" >> $EMAIL	#Grep die ganze Zeile von dem bestimmten Prozess ID
+			ps aux | fgrep -v grep | fgrep "${ARR_PID[$i]}" | tr -s "	" >> $EMAIL	#Grep die ganze Zeile von dem bestimmten Prozess ID
 			ARR_PID_CHECK+=("${ARR_PID[$i]}")				#Füge die Prozess ID in den Array hinzu
 
 			echo >> $EMAIL
