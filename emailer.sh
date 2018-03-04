@@ -1,12 +1,14 @@
 #!/bin/bash
 
 ###################################################################
-#Script Name    :       ResourceMonitoringScript                                    
+#Script Name    :       ResourceMonitoringScript
 #File Name      :       emailer.sh
-#Description    :       Dieses Script wird gebraucht um eine Email über den Google smtp Server zu senden                                                                     
-#Date           :       05.03.2018                                                                                    
+#Description    :       Dieses Script wird gebraucht um eine Email über den Google smtp Server zu senden
+#Date           :       05.03.2018
 #Author         :       Danyyil Luntovsky
-#Version        :       1.0                                           
+#Version        :       1.0
+#Parameter	:	./emailer.sh [Betreff] [Nachricht]
+#Delegation	: 	Wird von rms.sh aufgerufen
 ###################################################################
 
 ###VARIABLES###

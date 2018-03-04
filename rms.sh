@@ -3,11 +3,14 @@
 ###################################################################
 #Script Name	:       ResourceMonitoringScript
 #File Name	:	rms.sh
-#Description	:
+#Description	:	Ist für das Auslesen, Sortieren und Abfragen von Prozessen zuständig
+#			Sollte ein oder mehrere Prozesse über einen bestimmten Schwellenwert schreiten, wird die Information über den/die Prozess(e)
+#			an das emailer.sh Skript weitergereicht und der email_listener.sh gestartet.
 #Date           :       05.03.2018
 #Author       	:	Danyyil Luntovsky
 #Version       	:	1.0
 #Parameter	:	./rms.sh [THRESHOLD]
+#Delegation	:	Wird von main.sh aufgerufen
 ###################################################################
 
 ###VARIABLES###

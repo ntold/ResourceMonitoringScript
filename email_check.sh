@@ -1,33 +1,47 @@
 #!/bin/bash
 
 ###################################################################
-#Script Name	:       ResourceMonitoringScript                                    
+#Script Name	:       ResourceMonitoringScript
 #File Name	:	email_check.sh
-#Description	:                                                                        
-#Date           :       05.03.2018                                                                                    
+#Description	:	Dieses Script check ob man eine Nuene Email im Posteingang des angegebnen Google-Accounts hat.
+#			Es wird nach Name, Absender und ob der Prozess noch läuft gefiltert.
+#			Sollten alle Punkte zutreffen wird der über den Parameter übergebene Prozess gekillt
+#Date           :       04.03.2018
 #Author       	:	Danyyil Luntovsky
-#Version       	:	1.0                                           
+#Version       	:	1.0
+#Parameter	:	./email_check [Prozess ID]
+#Delegation	:	Wird von rms.sh aufgerufen
 ###################################################################
 
 ###VARIABLES###
 VAR_PID="$1"
 
 ###SCRIPT###
+
+#-------------------------------------------------------[ Email listener ]-------------------------------------------------------#
+#Das ganze befinden sich in der unedlichen Schleife, die jede Minute ausgeführt wird
+#VAR_CHECK_MESSAGE überprüft ob es eine Neue Email im Posteingang gibt die das Wort kill mit der dazugehörigen PID enthält
+#VAR_CHECK_SENDER überprüft ob die Email von dem gleichen Nutzer abgeschikt wurde (Ob es einen Antwort ist)
+#Danach wird mit einer if Abfrage geprüft ob der Prozess noch läuft, wenn nicht word das Skript beendet
+#In der nächsten if Abfrage wird die Nachricht und die PID geprüft
+#Und in der Letzten ob die nachricht auch wirklich von mir stammte
+#Sollten die ganzen Abfragen true sein wird der Prozess gekillt und das Script geschlossen
+
 while true
 do
-	sleep 10
-	VAR_CHECK_MESSAGE_PID=$(curl -su modul122.info:gibbiX12345 https://mail.google.com/mail/feed/atom | awk -F "summary" '{ print $2 }' | cut -d " " -f 1,22)
-	VAR_CHECK_SENDER=$(curl -su modul122.info:gibbiX12345 https://mail.google.com/mail/feed/atom | awk -F "name" '{ print $2 }')
+	sleep 60	#Warte 1 Minute
+	VAR_CHECK_MESSAGE_PID=$(curl -su modul122.info:gibbiX12345 https://mail.google.com/mail/feed/atom | awk -F "summary" '{ print $2 }' | cut -d " " -f 1,22) #Hole das 1. und das 22. Wort aus der neuen Email
+	VAR_CHECK_SENDER=$(curl -su modul122.info:gibbiX12345 https://mail.google.com/mail/feed/atom | awk -F "name" '{ print $2 }')	#Hole den Absender aus der neuen Email
 
-	if [ ! -z "$VAR_PID" ]; then
-		if [[ "$VAR_CHECK_MESSAGE_PID" = ">kill $VAR_PID" ]]; then
-			if [ "$VAR_CHECK_SENDER" == ">me</" ]; then
-				kill "$VAR_PID" > /dev/null
-				exit 0
+	if [ ! -z "$VAR_PID" ]; then		#Wenn der Prozess noch läuft
+		if [[ "$VAR_CHECK_MESSAGE_PID" = ">kill $VAR_PID" ]]; then	#Wenn die Nachricht kill ist und wenn die Prozess ID die selbe ist wie es dem Skript als Parameter übergeben wurde
+			if [ "$VAR_CHECK_SENDER" == ">me</" ]; then		#Wenn man selber der absender ist
+				kill "$VAR_PID" > /dev/null			#Wird der Befehl kill mit dem Parameter [VAR_PID] aufgerufen
+				exit 0						#Das Skript wird beendet
 			fi
 		fi
 	else
-		exit 0
+		exit 0				#Wenn der Prozess nicht mehr läuf wird das Skript beendet
 	fi
 done
 

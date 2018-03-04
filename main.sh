@@ -1,11 +1,13 @@
 #!/bin/bash
 
 ###################################################################
-#Script Name	:       main.sh                                                                                       
-#Description	:                                                                        
-#Date           :       05.03.2018                                                                                    
+#Script Name    :       ResourceMonitoringScript
+#File Name	:       main.sh
+#Description	:	Die Schnittschtelle zum Benutzer, hier werden fehlende Programme installiert
+#			und die Startart des Skripts bestummen (Testzweck oder Alltäglicher gebrauch)
+#Date           :       05.03.2018
 #Author       	:	Danyyil Luntovsky
-#Version       	:	1.0                                           
+#Version       	:	1.0
 ###################################################################
 
 
@@ -17,10 +19,15 @@ VAR_THRESHOLD=0
 
 ###FUNCTIONS###
 
-#Benutzereingabe mit Fehlerüberprüfung, übergebener Parameter ist das Programm das installiert werden soll
+#-------------------------------------------------------[ Function Install ]-------------------------------------------------------#
+#Diese Funktion konrolliert die Benutzereingabe mit einer Fehlerüberprüfung
+#Es wird so lange geloopt bis der Benutzer ja oder nein eingegeben hat
+#Ich habe mich für das 'nocasematch' entschieden, weil ich dann weniger Text beim case habe, das ermöglicht dem Nutzer eine Eingabe unabhängig von der Gross- und Kleinschreibung
+#Übergebener Parameter ist das Programm das installiert werden soll zB. func_install foo
+
 function func_install {
-        echo "$1 that is needed for the program to run, is not installed on your device!"
-        echo "Should it be installed? (y/n)"
+        echo "$1 wird benötigt um das Skript zu benutzen!"
+        echo "Soll es installiert werden? (y/n)"
         #Benutzereingabe mit Fehlerüberprüfung
         read VAR_INSTALL
         while true
@@ -28,14 +35,14 @@ function func_install {
                 shopt -s nocasematch    #Ab hier wird nicht mehr auf die Gross- und Kelinschreibung geachtet
                 case "$VAR_INSTALL" in
                 "y"|"yes" | "j" | "ja")                         #Eingabemöglichkeiten
-                        echo "installing..."
-                        apt-get install $1 >/dev/null    #installation von sendeEmail
+                        echo "installiere $1..."
+                        apt-get install $1 >/dev/null    #Installation von sendeEmail
                         break;;
-                "n"|"no" | "n" | "nein")
-                        echo "canceling"
+                "n"|"no" | "nein")
+                        echo "abbruch"
                         exit 0;;
                 *)      #Falls in VAR_INSTALL weder "ja" noch "nein" steht, Neueingabe
-                        echo "Invalid input, please retype (y/n)"
+                        echo "Ungültige Eingabe, bitte wiederholen (y/n)"
                         read VAR_INSTALL;;
                 esac
                 shopt -u nocasematch    #Ab hier wird wieder auf die Gross- und Kelinschreibung geachtet
@@ -43,7 +50,11 @@ function func_install {
 
 }
 
-#Wenn der als Parameter übergebene Prozess bereits läuft wird er beendet
+#-------------------------------------------------------[ Function is_running ]-------------------------------------------------------#
+#Die Variable IS_RUNNING holt sich die Prozess ID anhand vom Namen der als Parameter übergeben wurde
+#Prozess bereits läuft wird er beendet
+#Parameter ist das zu beendende Programm zB. func_running foo
+
 function func_running {
 	IS_RUNNING=$(ps -efww | grep -w "$1" | grep -v grep | grep -v $$ | awk '{ print $2 }')	#Grep Prozess ID
 
@@ -54,29 +65,38 @@ function func_running {
 
 ###SCRIPT###
 
-#Überprüfe ob wget installiert ist
-command -v wget >/dev/null
-if [ $? -eq 0 ]; then
-	wget -q --spider http://google.com	#checkt die verfügbarkeit von google.com
+#-------------------------------------------------------[ Check internet connection ]-------------------------------------------------------#
+#Als erstes wird überprüft ob wget installiert ist
+#Wenn nicht wird die Funktion func_install mit dem Parameter wget aufgerufen und wget installiert
+#
+command -v wget >/dev/null 2>&1 || #Überprüfe ob wget installiert ist
+{
+	func_install wget;
+}
 
-	if ! [ $? -eq 0 ]; then			#Wenn der Exit code vom get Befehl nicht 0 ist
-		echo "This script requires a stable internet connection to run!"
-		exit 4
-	fi
+if hash wget 2>/dev/null; then			#Nochmals die Überprüfung ob wget installiert wurde
+	 wget -q --spider http://google.com     #checkt die verfügbarkeit von google.com
+        if ! [ $? -eq 0 ]; then                 #Wenn der Exit code vom get Befehl nicht 0 ist
+                echo "This script requires a stable internet connection to run!"
+                exit 4
+        fi
 else
-	func_install wget
+	echo "wget ist nicht installiert"
+	exit 1
 fi
 
-
+#-------------------------------------------------------[ Install sendEmail ]-------------------------------------------------------#
 #Überprüfe ob sendEmail installiert ist
+
 command -v sendEmail >/dev/null 2>&1 ||
 {
 	func_install sendemail
 }
 
 
-
+#-------------------------------------------------------[ Start script ]-------------------------------------------------------#
 #Überprüfung ob sendEmail richtig installiert wurde
+#Schiliesse alle Skripts die noch laufen
 if hash sendEmail 2>/dev/null; then
 
 	func_running rms.sh
@@ -107,7 +127,7 @@ if hash sendEmail 2>/dev/null; then
 	echo
 
 	echo "		1) Start		"
-	echo "		2) Test this script	"
+	echo "		2) Teste dieses Skript	"
 	#Benutzereingabe mit Fehlerüberprüfung
 	while true
 	do
@@ -120,53 +140,53 @@ if hash sendEmail 2>/dev/null; then
 			#Benutzereingabe mit Fehlerüberprüfung
 			while true
 			do
-				read -p "	Enter threshold (default 80): " VAR_THRESHOLD
-				IS_NUMERIC='^[0-9]+$' #Befehl für die Überprüfung ob alle Zeichen nummerisch sind
+				read -p "	Schwellenwert (standard 80): " VAR_THRESHOLD
+				IS_NUMERIC='^[0-9]+$' 	#Befehl für die Überprüfung ob alle Zeichen nummerisch sind
 				if [[ $VAR_THRESHOLD =~ $IS_NUMERIC && $VAR_THRESHOLD -le 100 ]]; then 	#Wenn VAR_THRESHOLD eine Zahl ist und kleiner oder gelich 100 ist
 					if [ -f "rms.sh" ]; then					#Wenn das Script rms.sh existiert und im gleichen Verzeichnis ist
-						echo "	starting rms.sh ..."
-						./rms.sh $VAR_THRESHOLD &				#Startet ds rms Script mit dem Threshold Parameter im Hintergrund
+						echo "	starte rms.sh ..."
+						./rms.sh $VAR_THRESHOLD &				#Startet das rms.sh Script mit dem Threshold Parameter im Hintergrund
 						break
 					else
 						#Falls das Script nicht im selben Verzeichnis liegt, error Ausgabe
-						echo "	File \"rms.sh\" is missing"
+						echo "	Datei \"rms.sh\" fehlt"
 						exit 2
 					fi
 				else
-					echo "	Invalid input"
+					echo "	Ungültige Einage!"
 				fi
 			done
 			break;;
-		#Zu Testzwecken gedacht, hierbei wird noch ein Test Auslastungs Script mitgestartet
+		#Zu Testzwecken gedacht, hierbei wird noch ein Test Auslastungs Skript mitgestartet
 		2)
-			echo "	Setting threshold to 30 ..."
+			echo "	Setze Schwellenwert auf 30 ..."
 			sleep 1
 			VAR_THRESHOLD=30
 			if [ -f "test.sh" ]; then			#Wenn das Script test.sh existiert und im gleichen Verzeichnis ist
-				echo "	Starting test.sh ..."
+				echo "	Starte test.sh ..."
 				./test.sh
 				sleep 2
 			else
 				#Falls das Script nicht im selben Verzeichnis liegt, error Ausgabe
-				echo "	File \"test.sh\" is missing"
+				echo "	Datei \"test.sh\" fehlt"
 				exit 2
 			fi
 			if [ -f "rms.sh" ]; then			#Wenn das Script rms.sh existiert und im gleichen Verzeichnis ist
-				echo "	Starting rms.sh ..."
-				./rms.sh $VAR_THRESHOLD &		#Startet ds rms Script mit dem Threshold Parameter im Hintergrund
+				echo "	Starte rms.sh ..."
+				./rms.sh $VAR_THRESHOLD &		#Startet ds rms.sh Script mit dem Threshold Parameter im Hintergrund
 			else
 				#Falls das Script nicht im selben Verzeichnis liegt, error Ausgabe
-				echo "	File \"rms.sh\" is missing"
+				echo "	Datei \"rms.sh\" fehlt"
 				exit 2
 			fi
 
 			break;;
 		#Wenn Benutzereingabe nicht 1 oder 2 ist
 		*)
-			echo "	Invalid input, please retype (1/2)";;
+			echo "	Ungültige Eingabe, bitte wiederholen (1/2)";;
 		esac
 	done
 else
-	echo "sendEmail is not installed"
+	echo "sendEmail ist nicht installiert"
 	exit 1
 fi
