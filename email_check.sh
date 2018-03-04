@@ -30,7 +30,7 @@ VAR_PID="$1"
 
 while true
 do
-	sleep 10	#Warte 1 Minute
+	sleep 60	#Warte 1 Minute
 
 	ps aux | fgrep -v grep | grep "$VAR_PID" >/dev/null
 

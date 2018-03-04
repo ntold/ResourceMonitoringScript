@@ -78,5 +78,5 @@ do
 			$EMAIL_LISTENER "${ARR_PID[$i]}" &			#Starte den Email listener
 		fi
 	done
-	sleep 1		# Der ganze Code wird jede Minute ausgeführt
+	sleep 60		# Der ganze Code wird jede Minute ausgeführt
 done
