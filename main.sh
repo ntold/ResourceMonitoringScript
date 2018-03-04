@@ -29,21 +29,21 @@ function func_install {
         echo "$1 wird benötigt um das Skript zu benutzen!"
         echo "Soll es installiert werden? (y/n)"
         #Benutzereingabe mit Fehlerüberprüfung
-        read VAR_INSTALL
+        read -r VAR_INSTALL
         while true
         do
                 shopt -s nocasematch    #Ab hier wird nicht mehr auf die Gross- und Kelinschreibung geachtet
                 case "$VAR_INSTALL" in
                 "y"|"yes" | "j" | "ja")                         #Eingabemöglichkeiten
                         echo "installiere $1..."
-                        apt-get install $1 >/dev/null    #Installation von sendeEmail
+                        apt-get install "$1" >/dev/null    #Installation von sendeEmail
                         break;;
                 "n"|"no" | "nein")
                         echo "abbruch"
                         exit 0;;
                 *)      #Falls in VAR_INSTALL weder "ja" noch "nein" steht, Neueingabe
                         echo "Ungültige Eingabe, bitte wiederholen (y/n)"
-                        read VAR_INSTALL;;
+                        read -r VAR_INSTALL;;
                 esac
                 shopt -u nocasematch    #Ab hier wird wieder auf die Gross- und Kelinschreibung geachtet
         done
@@ -59,7 +59,7 @@ function func_running {
 	IS_RUNNING=$(ps -efww | grep -w "$1" | grep -v grep | grep -v $$ | awk '{ print $2 }')	#Grep Prozess ID
 
 	if [ ! -z "$IS_RUNNING" ]; then
-		kill $IS_RUNNING
+		kill "$IS_RUNNING"
 	fi
 }
 
@@ -132,7 +132,7 @@ if hash sendEmail 2>/dev/null; then
 	while true
 	do
 		echo
-		read -p "	$(hostname) >" VAR_UINPUT
+		read -rp "	$(hostname) >" VAR_UINPUT
 
 		case "$VAR_UINPUT" in
 		#Startet das Script rms.sh normal (ready to use)
@@ -140,12 +140,12 @@ if hash sendEmail 2>/dev/null; then
 			#Benutzereingabe mit Fehlerüberprüfung
 			while true
 			do
-				read -p "	Schwellenwert (standard 80): " VAR_THRESHOLD
+				read -rp "	Schwellenwert (standard 80): " VAR_THRESHOLD
 				IS_NUMERIC='^[0-9]+$' 	#Befehl für die Überprüfung ob alle Zeichen nummerisch sind
 				if [[ $VAR_THRESHOLD =~ $IS_NUMERIC && $VAR_THRESHOLD -le 100 ]]; then 	#Wenn VAR_THRESHOLD eine Zahl ist und kleiner oder gelich 100 ist
 					if [ -f "rms.sh" ]; then					#Wenn das Script rms.sh existiert und im gleichen Verzeichnis ist
 						echo "	starte rms.sh ..."
-						./rms.sh $VAR_THRESHOLD &				#Startet das rms.sh Script mit dem Threshold Parameter im Hintergrund
+						./rms.sh "$VAR_THRESHOLD" &				#Startet das rms.sh Script mit dem Threshold Parameter im Hintergrund
 						break
 					else
 						#Falls das Script nicht im selben Verzeichnis liegt, error Ausgabe
