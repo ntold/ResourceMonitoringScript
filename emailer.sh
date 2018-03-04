@@ -3,7 +3,7 @@
 ###################################################################
 #Script Name    :       ResourceMonitoringScript
 #File Name      :       emailer.sh
-#Description    :       Dieses Script wird gebraucht um eine Email über den Google smtp Server zu senden
+#Description    :       Dieses Script wird gebraucht um eine Email über den Google SMTP Server zu senden
 #Date           :       05.03.2018
 #Author         :       Danyyil Luntovsky
 #Version        :       1.0
