@@ -50,17 +50,12 @@ function func_install {
 
 }
 
-#-------------------------------------------------------[ Function is_running ]-------------------------------------------------------#
-#Die Variable IS_RUNNING holt sich die Prozess ID anhand vom Namen der als Parameter übergeben wurde
-#Prozess bereits läuft wird er beendet
+#-------------------------------------------------------[ Function running ]-------------------------------------------------------#
+#Wenn der Prozess läuft wird er beendet
 #Parameter ist das zu beendende Programm zB. func_running foo
 
 function func_running {
-	IS_RUNNING=$(ps -efww | grep -w "$1" | grep -v grep | grep -v $$ | awk '{ print $2 }')	#Grep Prozess ID
-
-	if [ ! -z "$IS_RUNNING" ]; then
-		kill "$IS_RUNNING"
-	fi
+	pkill "$1"
 }
 
 ###SCRIPT###
@@ -68,7 +63,7 @@ function func_running {
 #-------------------------------------------------------[ Check internet connection ]-------------------------------------------------------#
 #Als Erstes wird überprüft ob wget installiert ist
 #Wenn nicht wird die Funktion func_install mit dem Parameter wget aufgerufen und wget installiert
-#
+
 command -v wget >/dev/null 2>&1 || #Überprüfe ob wget installiert ist
 {
 	func_install wget;
