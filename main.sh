@@ -3,8 +3,8 @@
 ###################################################################
 #Script Name    :       ResourceMonitoringScript
 #File Name	:       main.sh
-#Description	:	Die Schnittschtelle zum Benutzer, hier werden fehlende Programme installiert
-#			und die Startart des Skripts bestummen (Testzweck oder Alltäglicher gebrauch)
+#Description	:	Die Schnittstelle zum Benutzer, hier werden fehlende Programme installiert
+#			und die Startart des Skripts bestimmen (Testzweck oder alltäglicher Gebrauch)
 #Date           :       05.03.2018
 #Author       	:	Danyyil Luntovsky
 #Version       	:	1.0
@@ -20,10 +20,10 @@ VAR_THRESHOLD=0
 ###FUNCTIONS###
 
 #-------------------------------------------------------[ Function Install ]-------------------------------------------------------#
-#Diese Funktion konrolliert die Benutzereingabe mit einer Fehlerüberprüfung
-#Es wird so lange geloopt bis der Benutzer ja oder nein eingegeben hat
+#Diese Funktion kontrolliert die Benutzereingabe mit einer Fehlerüberprüfung
+#Es wird so lange geloopt, bis der Benutzer ja oder nein eingegeben hat
 #Ich habe mich für das 'nocasematch' entschieden, weil ich dann weniger Text beim case habe, das ermöglicht dem Nutzer eine Eingabe unabhängig von der Gross- und Kleinschreibung
-#Übergebener Parameter ist das Programm das installiert werden soll zB. func_install foo
+#Übergebener Parameter ist das Programm, das installiert werden soll zB. func_install foo
 
 function func_install {
         echo "$1 wird benötigt um das Skript zu benutzen!"
@@ -66,7 +66,7 @@ function func_running {
 ###SCRIPT###
 
 #-------------------------------------------------------[ Check internet connection ]-------------------------------------------------------#
-#Als erstes wird überprüft ob wget installiert ist
+#Als Erstes wird überprüft ob wget installiert ist
 #Wenn nicht wird die Funktion func_install mit dem Parameter wget aufgerufen und wget installiert
 #
 command -v wget >/dev/null 2>&1 || #Überprüfe ob wget installiert ist
@@ -75,8 +75,8 @@ command -v wget >/dev/null 2>&1 || #Überprüfe ob wget installiert ist
 }
 
 if hash wget 2>/dev/null; then			#Nochmals die Überprüfung ob wget installiert wurde
-	 wget -q --spider http://google.com     #checkt die verfügbarkeit von google.com
-        if ! [ $? -eq 0 ]; then                 #Wenn der Exit code vom get Befehl nicht 0 ist
+	 wget -q --spider http://google.com     #checkt die Verfügbarkeit von google.com
+        if ! [ $? -eq 0 ]; then                 #Wenn der Exit code vom wget Befehl nicht 0 ist
                 echo "This script requires a stable internet connection to run!"
                 exit 4
         fi
@@ -96,7 +96,7 @@ command -v sendEmail >/dev/null 2>&1 ||
 
 #-------------------------------------------------------[ Start script ]-------------------------------------------------------#
 #Überprüfung ob sendEmail richtig installiert wurde
-#Schiliesse alle Skripts die noch laufen
+#SChliesse alle Skripts die noch laufen
 if hash sendEmail 2>/dev/null; then
 
 	func_running rms.sh
