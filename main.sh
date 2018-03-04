@@ -87,12 +87,24 @@ fi
 
 #-------------------------------------------------------[ Install sendEmail ]-------------------------------------------------------#
 #Überprüfe ob sendEmail installiert ist
+#Falls nicht, installiere sendemail
+#sendemail wird im Skript emailer.sh gebraucht
 
 command -v sendEmail >/dev/null 2>&1 ||
 {
 	func_install sendemail
 }
 
+
+#-------------------------------------------------------[ Install curl ]-------------------------------------------------------#
+#Überprüfe ob curl installiert ist
+#Falls nicht, installiere crul
+#crul wird im Skript email_check.sh gebraucht
+
+command -v curl >/dev/null 2>&1 ||
+{
+	func_install curl
+}
 
 #-------------------------------------------------------[ Start script ]-------------------------------------------------------#
 #Überprüfung ob sendEmail richtig installiert wurde
