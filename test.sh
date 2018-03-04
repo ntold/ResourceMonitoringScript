@@ -14,7 +14,7 @@
 ###SCRIPT###
 
 #-------------------------------------------------------[ stress testing ]-------------------------------------------------------#
-#Das Bit-genaue kopieren von Nullen mit der Blockgrösse 10 und zippen auf der Grössten kompressionsrate
+#Das Bit-genaue kopieren von Nullen mit der Blockgrösse 10 und zippen auf der grössten Kompressionsrate
 #in die Datei /tmp/file.out.bz2
 #Im Hintergrund
 dd if=/dev/zero bs=10 | bzip2 -9 > /tmp/file.out.bz2 &
