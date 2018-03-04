@@ -43,10 +43,10 @@ do
 	i=1
 	for token in $STR_PID_PERCENTAGES		#Für jedes Element (token) im String (STR_PID_PERCENTAGES)
 	do
-		if [ $(($i % 2)) -eq 0 ]; then
-			ARR_PERCENTAGES+=($token)	#Wenn i Gerade is wird das derzeitige Element im token in den ARR_PERCENTAGES eingespielt
+		if [ $((i % 2)) -eq 0 ]; then
+			ARR_PERCENTAGES+=("$token")	#Wenn i Gerade is wird das derzeitige Element im token in den ARR_PERCENTAGES eingespielt
 		else
-			ARR_PID+=($token)		#Wenn i Ungerade is wird das derzeitige Element im token in den ARR_PID eingespielt
+			ARR_PID+=("$token")		#Wenn i Ungerade is wird das derzeitige Element im token in den ARR_PID eingespielt
 		fi
 		((i++))
 	done
@@ -69,8 +69,8 @@ do
 			echo "$PS_HEADER" >> $EMAIL	#Erstelle eine Datei mit dem Header namens email.[PID]
 			echo >> $EMAIL
 
-			ps aux | fgrep ${ARR_PID[$i]} | fgrep -v grep >> $EMAIL	#Grep die ganze Zeile von dem Bestimmten Prozess ID
-			ARR_PID_CHECK+=(${ARR_PID[$i]})				#Füge die Prozess ID in den Array hinzu
+			ps aux | fgrep "${ARR_PID[$i]}" | fgrep -v grep >> $EMAIL	#Grep die ganze Zeile von dem Bestimmten Prozess ID
+			ARR_PID_CHECK+=("${ARR_PID[$i]}")				#Füge die Prozess ID in den Array hinzu
 
 			echo >> $EMAIL
 			sed "1 i$DATE" $EMAIL > $EMAIL.tmp && mv $EMAIL.tmp $EMAIL	#Setze in die erste Zeile das heutige Datum mit der Zeitzone
