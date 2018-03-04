@@ -64,7 +64,7 @@ do
 			echo "$STR_HEADER" >> $EMAIL	#Erstelle eine Datei mit dem Header namens email.[PID]
 			echo >> $EMAIL
 
-			ps aux | fgrep -v grep | fgrep "${ARR_PID[$i]}" | tr -s "	" >> $EMAIL	#Grep die ganze Zeile von dem bestimmten Prozess ID
+			ps aux | fgrep -v grep | fgrep "${ARR_PID[$i]}" | cut -b 1-100 >> $EMAIL	#Grep die ganze Zeile von dem bestimmten Prozess ID
 			ARR_PID_CHECK+=("${ARR_PID[$i]}")				#Füge die Prozess ID in den Array hinzu
 
 			echo >> $EMAIL
