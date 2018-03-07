@@ -15,15 +15,15 @@
 
 ###VARIABLES###
 STR_DATE=$(date '+%d/%m/%Y %H:%M %Z')	#Das heutige Datum mit der Zeitzone
-VAR_THRESHOLD=$1				#Die Schwelle um die Email zu verschicken
+VAR_THRESHOLD=$1                			#Die Schwelle um die Email zu verschicken
 STR_SUBJECT="$(hostname): CPU Consumption Alert => Utilization Exceeded Threshold."	#Betreff der Email mit dem Hostnamen
-EMAIL=./email.$$			#Name der Emaildatei, die erstellt wird, durch das '$$' (PID des Prozesses), wird der Name einzigartig
-MAIL_PROG=./emailer.sh			#Email Programm
-EMAIL_LISTENER=./email_check.sh		#Email listener Programm
+EMAIL=./email.$$			                #Name der Emaildatei, die erstellt wird, durch das '$$' (PID des Prozesses), wird der Name einzigartig
+MAIL_PROG=./emailer.sh			          #Email Programm
+EMAIL_LISTENER=./email_check.sh		    #Email listener Programm
 STR_HEADER="$(ps aux | head -1 | tr -s "	")"	#Die Kopfzeile der Email mit den Informationen wie Name, Befehl, PID usw.
-declare -a ARR_PERCENTAGES=()		#Deklaration von Array
-declare -a ARR_PID=()			#Deklaration von Array
-declare -a ARR_PID_CHECK=()		#Deklaration von Array
+declare -a ARR_PERCENTAGES=()		     #Deklaration von Array
+declare -a ARR_PID=()			           #Deklaration von Array
+declare -a ARR_PID_CHECK=()		       #Deklaration von Array
 
 ###SCRIPT###
 
