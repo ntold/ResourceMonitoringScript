@@ -1,7 +1,8 @@
 # ResourceMonitoringScript
 
 1)	Warum habe ich dieses Skript geschrieben?
-    Ich hatte ziemlich lange überlegt, was mir im Alltag Arbeit und Zeit sparen könnte und ich bin zum Entschluss gekommen für                               meinen Server zu Hause ein Skript zu schreiben, dass den Ressourcenverbrauch der CPU überwacht. 
+Ich habe mir ziemlich lange überlegt, was mir im Alltag Arbeit und Zeit sparen könnte. Nach langem Hin und Her habe kam ich zum Entschluss ein Skript zu schreiben, welches den Ressourcenverbrauch der CPU von meinem Server zuhause überwacht.
+
     
 2)	Was kann dieses Skript?
 Sollte ein bestimmter Prozess mehr Leistung verbrauchen, als mein Skript vorgibt, wird mir eine E-Mail mit der Auslastung in Prozent und dem Namen versandt. Wenn ich nicht will, dass dieser Prozess so viel Leistung verbraucht, kann ich ihn beenden, indem ich auf die Erhaltene E-Mail mit «kill» antworte.
