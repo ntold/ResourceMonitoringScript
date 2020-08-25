@@ -16,7 +16,7 @@ FROM=modul122.info@gmail.com
 TO=modul122.info@gmail.com
 SERVER=smtp.googlemail.com:587
 USER=modul122.info
-PASS=Modul122_bash
+PASS=PASSWORT.ENV.GLOBAL
 SUBJECT=$1
 MESSAGE=$(cat "$2")
 
