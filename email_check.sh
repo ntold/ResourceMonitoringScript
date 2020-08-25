@@ -22,7 +22,7 @@ VAR_PID="$1"
 #Das Ganze befindet sich in der uneidlichen Schleife, die jede Minute ausgeführt wird
 #VAR_CHECK_MESSAGE überprüft ob es eine Neue Email im Posteingang gibt die das Wort kill mit der dazugehörigen PID enthält
 #VAR_CHECK_SENDER überprüft ob die Email von dem gleichen Nutzer abgeschickt wurde (Ob es einen Antwort ist)
-#Danach wird mit einer if Abfrage geprüft ob der Prozess noch läuft, wenn nicht word das Skript beendet
+#Danach wird mit einer if Abfrage geprüft ob der Prozess noch läuft, wenn nicht wird das Skript beendet
 #In der nächsten if Abfrage wird die Nachricht und die PID geprüft
 #Und in der Letzten ob die Nachricht auch wirklich von mir stammte
 #Sollten die ganzen Abfragen true sein wird der Prozess gekillt und das Script geschlossen
